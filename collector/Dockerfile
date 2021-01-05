@@ -1,11 +1,15 @@
-FROM centos:6
+FROM openjdk:8-jre-slim
+LABEL maintainer="support@overops.com"
 
-# install OpenJDK 8
-RUN yum install -y java-1.8.0-openjdk
+ENV JVM_LIB_FILE /usr/local/openjdk-8/lib/amd64/server/libjvm.so
 
-# set env vars
-ENV JAVA_HOME /etc/alternatives/jre
-ENV JVM_LIB_FILE /etc/alternatives/jre/lib/amd64/server/libjvm.so
+# install curl
+RUN apt-get update; apt-get install -y curl
+
+# rootless
+RUN groupadd --gid 1000 overops
+RUN adduser --home /opt/takipi --uid 1000 --gid 1000 overops
+USER 1000:1000
 
 # install into the /opt directory
 WORKDIR /opt
